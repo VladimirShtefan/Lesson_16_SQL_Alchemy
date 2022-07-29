@@ -25,3 +25,4 @@ def create_table(data_base: list[dict], name_class):
         db.session.commit()
     except IntegrityError:
         print('База уже создана')
+    db.session.close()
