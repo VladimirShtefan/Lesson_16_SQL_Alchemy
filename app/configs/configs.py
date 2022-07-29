@@ -1,24 +1,23 @@
-from pathlib import Path
+from app.configs.path import DEV_DATA_BASE_DIR
 
 
 class Config:
     JSON_AS_ASCII = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEBUG = False
+    TESTING = False
+    SQLALCHEMY_ECHO = False
 
 
 class DevConfig(Config):
-    BASE_DIR = Path(__file__).resolve().parent.parent.parent
-    DATABASE_DIR = BASE_DIR.joinpath('data_base')
     ENV = 'development'
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DATABASE_DIR}/development.db'
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{DEV_DATA_BASE_DIR}'
     SQLALCHEMY_ECHO = True
 
 
 class ProdConfig(Config):
     ENV = 'production'
-    DEBUG = False
-    TESTING = False
     SQLALCHEMY_DATABASE_URI = 'sqlite:///prod.db'
-    SQLALCHEMY_ECHO = False
+

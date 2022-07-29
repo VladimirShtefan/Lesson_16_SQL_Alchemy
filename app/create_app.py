@@ -1,24 +1,19 @@
-from typing import Type
+import os
 
 from flask import Flask
 
-from app.configs.configs import Config
-from data_base.create_db import db
-from data_base.models.user_model import User
+from app.blueprints.views import orders_blueprint
+from app.configs.configs import DevConfig, ProdConfig
+from data_base.creat_db import db
+
+app = Flask(__name__)
+
+app.register_blueprint(orders_blueprint)
 
 
-def create_app(config: Type[Config]) -> Flask:
-    app = Flask(__name__)
-    app.config.from_object(config)
+if os.getenv('FLASK_ENV') == 'development':
+    app.config.from_object(DevConfig)
+else:
+    app.config.from_object(ProdConfig)
 
-    db.init_app(app)
-
-    @app.before_first_request
-    def test():
-        db.create_all()
-
-    @app.route('/')
-    def main():
-        return 'ok'
-
-    return app
+db.init_app(app)
