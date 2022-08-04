@@ -1,6 +1,6 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 
-from app.blueprints.dao.dao_utils import get_data_for_table, create_table
+from app.blueprints.dao.dao_utils import get_data_for_table, create_table, DataBase
 from app.configs.path import USER_JSON_DIR, ORDERS_JSON_DIR, OFFERS_JSON_DIR
 from data_base.models.models import User, Order, Offer
 
@@ -21,7 +21,7 @@ def first_request():
 
 @orders_blueprint.get('/')
 def main_page():
-    return 'Ok'
+    return jsonify({'status': 'ok'})
 
 
 @orders_blueprint.get('/users/<int:uid>')
@@ -56,3 +56,62 @@ def offers_page(uid=None):
         offer = Offer.query.filter(Offer.id == uid).first()
         return jsonify(offer.convert_in_dict())
 
+
+@orders_blueprint.post('/users/')
+def add_user():
+    user = request.get_json()
+    new_user = DataBase(User).add_object(user)
+    return jsonify(new_user)
+
+
+@orders_blueprint.put('/users/<int:uid>')
+def update_user(uid: int):
+    user = request.get_json()
+    new_user = DataBase(User).update_object(user, uid)
+    return jsonify(new_user)
+
+
+@orders_blueprint.delete('/users/<int:uid>')
+def delete_user(uid: int):
+    deleted_user = DataBase(User).delete_object(uid)
+    return jsonify(deleted_user)
+
+
+@orders_blueprint.post('/orders/')
+def add_order():
+    order = request.get_json()
+    new_order = DataBase(Order).add_object(order)
+    return jsonify(new_order)
+
+
+@orders_blueprint.put('/orders/<int:oid>')
+def update_order(oid: int):
+    order = request.get_json()
+    new_order = DataBase(Order).update_object(order, oid)
+    return jsonify(new_order)
+
+
+@orders_blueprint.delete('/orders/<int:oid>')
+def delete_order(oid: int):
+    deleted_order = DataBase(Order).delete_object(oid)
+    return jsonify(deleted_order)
+
+
+@orders_blueprint.post('/offers/')
+def add_offer():
+    offer = request.get_json()
+    new_offer = DataBase(Offer).add_object(offer)
+    return jsonify(new_offer)
+
+
+@orders_blueprint.put('/offers/<int:oid>')
+def update_offer(oid: int):
+    offer = request.get_json()
+    new_offer = DataBase(Offer).update_object(offer, oid)
+    return jsonify(new_offer)
+
+
+@orders_blueprint.delete('/offers/<int:oid>')
+def delete_offer(oid: int):
+    deleted_offer = DataBase(Offer).delete_object(oid)
+    return jsonify(deleted_offer)
